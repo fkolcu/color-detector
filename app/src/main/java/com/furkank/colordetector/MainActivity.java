@@ -1,12 +1,18 @@
 package com.furkank.colordetector;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.opengl.GLES20;
+import android.graphics.SurfaceTexture;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.TextureView;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -20,14 +26,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Toast;
+
+import java.nio.IntBuffer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private View pointer = null;
+    private TextureView cameraView = null;
+
+    private CameraHandler cameraHandler = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Define pointer
+        pointer = findViewById(R.id.pointer);
+
+        // Define camera viewer
+        cameraView = findViewById(R.id.cameraView);
+        cameraView.setSurfaceTextureListener(cameraViewListener);
+
+        // Get camera service
+        // Create camera handler
+        Object cameraService = getSystemService(Context.CAMERA_SERVICE);
+        cameraHandler = new CameraHandler(this, cameraService, cameraView);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -45,6 +72,43 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    // Listen texture view and if it is available
+    // then try to open the camera
+    protected TextureView.SurfaceTextureListener cameraViewListener = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+            // Open the camera
+            cameraHandler.openCamera();
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+            int b[] = new int[50 * (100 + 50)];
+            IntBuffer ib = IntBuffer.wrap(b);
+            ib.position(0);
+            GLES20.glReadPixels(100, 100, 50, 50, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, ib);
+        }
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            cameraHandler.openCamera();
+        } else {
+            Toast.makeText(this, "You need to give CAMERA permission.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

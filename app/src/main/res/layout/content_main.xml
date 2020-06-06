@@ -12,11 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextureView
+            android:id="@+id/cameraView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <View
             android:id="@+id/pointer"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:padding="32dp"
+            android:layout_above="@id/cameraView"
             android:background="@drawable/pointer"
             android:layout_gravity="center_vertical|center_horizontal"/>
 
