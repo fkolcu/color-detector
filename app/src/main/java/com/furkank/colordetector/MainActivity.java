@@ -1,7 +1,9 @@
 package com.furkank.colordetector;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.opengl.GLES20;
 import android.graphics.SurfaceTexture;
@@ -13,6 +15,7 @@ import android.view.TextureView;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     private TextureView cameraView = null;
 
     private CameraHandler cameraHandler = null;
+    private ColorDetectHandler colorDetectHandler = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +63,13 @@ public class MainActivity extends AppCompatActivity
         Object cameraService = getSystemService(Context.CAMERA_SERVICE);
         cameraHandler = new CameraHandler(this, cameraService, cameraView);
 
+        // Color detect handler
+        colorDetectHandler = new ColorDetectHandler(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        FloatingActionButton buttonCatchColor = findViewById(R.id.buttonCatchColor);
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -114,6 +115,32 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "You need to give CAMERA permission.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * When clicked on color catch button
+     * @param view
+     */
+    public void onColorCaught(View view) {
+        // We need to create an instance of color detect handler
+        // each time because we need to each variable within as empty at first
+        colorDetectHandler.detect(cameraView, pointer);
+
+        Snackbar
+                .make(
+                        view,
+                        colorDetectHandler.name + " (" + colorDetectHandler.hue + ")",
+                        10000
+                )
+                .setAction(R.string.save, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    // The following methods is automatically generated
 
     @Override
     public void onBackPressed() {
