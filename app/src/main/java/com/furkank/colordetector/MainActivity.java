@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.opengl.GLES20;
 import android.graphics.SurfaceTexture;
 
+import com.furkank.colordetector.firebase.FirebaseWriteHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,8 +50,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Full-screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
 
         // Define pointer
@@ -119,6 +123,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * When clicked on color catch button
+     *
      * @param view
      */
     public void onColorCaught(View view) {
@@ -135,7 +140,17 @@ public class MainActivity extends AppCompatActivity
                 .setAction(R.string.save, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        UserColor userColor = new UserColor();
+                        userColor.setColor(colorDetectHandler.hex);
+                        userColor.setName(colorDetectHandler.name);
+
+                        FirebaseWriteHandler fbWrite = new FirebaseWriteHandler();
+                        boolean result = fbWrite.add("colors", userColor);
+                        if(result){
+                            Toast.makeText(MainActivity.this, R.string.saved_successfully, Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, R.string.not_saved, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .show();

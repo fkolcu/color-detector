@@ -1,4 +1,4 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.firebase;
 
 import android.app.Activity;
 import android.widget.Toast;
@@ -14,28 +14,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class FirebaseHandler<T> {
+public class FirebaseReadHandler<T> {
     private Class<T> typeClass;
     private Activity activity;
 
     FirebaseDatabase database = null;
 
-    public FirebaseHandler(Class<T> typeClass, Activity activity) {
+    public FirebaseReadHandler(Class<T> typeClass, Activity activity) {
         this.typeClass = typeClass;
         this.activity = activity;
         database = FirebaseDatabase.getInstance();
-    }
-
-    /**
-     * Adds data to the collection in the firebase realtime database
-     *
-     * @param collection
-     * @param data
-     */
-    protected void add(String collection, Object data) {
-        DatabaseReference myRef = database.getReference(collection);
-        DatabaseReference newRef = myRef.push();
-        newRef.setValue(data);
     }
 
     /**
@@ -43,7 +31,7 @@ public class FirebaseHandler<T> {
      * @param collection
      * @param callback
      */
-    protected void read(String collection, final Function<ArrayList<T>, Integer> callback) {
+    public void read(String collection, final Function<ArrayList<T>, Integer> callback) {
         final ArrayList<T> objectList = new ArrayList<T>();
 
         DatabaseReference ref = database.getReference(collection);

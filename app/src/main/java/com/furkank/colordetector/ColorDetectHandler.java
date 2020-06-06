@@ -7,12 +7,9 @@ import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.view.TextureView;
 
-import androidx.arch.core.util.Function;
+import com.furkank.colordetector.firebase.FirebaseReadHandler;
 
 import java.util.ArrayList;
-
-import org.json.JSONObject;
-import org.json.JSONException;
 
 public class ColorDetectHandler {
 
@@ -53,11 +50,19 @@ public class ColorDetectHandler {
         this.hue = "";
     }
 
+    /**
+     * Reads color definition list from database
+     */
     private void readColorDefinitions() {
-        FirebaseHandler<ColorDefinition> fbHandler = new FirebaseHandler<ColorDefinition>(ColorDefinition.class, activity);
+        FirebaseReadHandler<ColorDefinition> fbHandler = new FirebaseReadHandler<ColorDefinition>(ColorDefinition.class, activity);
         fbHandler.read("color_definitions", this::readCallback);
     }
 
+    /**
+     * This is called after firebase read completed
+     * @param list
+     * @return
+     */
     private Integer readCallback(ArrayList<ColorDefinition> list) {
         colorList = list;
         Toast.makeText(activity, "Its ready.", Toast.LENGTH_SHORT).show();

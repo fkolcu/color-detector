@@ -14,4 +14,6 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="save">Kaydet</string>
+    <string name="saved_successfully">Kaydedildi!</string>
+    <string name="not_saved">Kaydedilemedi :(</string>
 </resources>
