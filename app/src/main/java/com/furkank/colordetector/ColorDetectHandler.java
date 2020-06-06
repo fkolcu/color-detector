@@ -1,21 +1,18 @@
 package com.furkank.colordetector;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.Toast;
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.view.TextureView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.arch.core.util.Function;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
+
+import org.json.JSONObject;
+import org.json.JSONException;
 
 public class ColorDetectHandler {
 
@@ -33,14 +30,83 @@ public class ColorDetectHandler {
 
     private Bitmap bitmap;
 
-    ArrayList<JSONObject> colorList = null;
+    ArrayList<ColorDefinition> colorList = null;
 
     public ColorDetectHandler(Activity activity) {
         this.activity = activity;
-        colorList = new ArrayList<JSONObject>();
+        colorList = new ArrayList<ColorDefinition>();
 
         reset();
-        readColorInformationList();
+        readColorDefinitions();
+    }
+
+    /**
+     * Resets all variables in this class
+     */
+    private void reset() {
+        this.red = 0;
+        this.green = 0;
+        this.blue = 0;
+        this.rgb = 0;
+        this.hex = "";
+        this.name = "";
+        this.hue = "";
+    }
+
+    private void readColorDefinitions() {
+        FirebaseHandler<ColorDefinition> fbHandler = new FirebaseHandler<ColorDefinition>(ColorDefinition.class, activity);
+        fbHandler.read("color_definitions", this::readCallback);
+    }
+
+    private Integer readCallback(ArrayList<ColorDefinition> list) {
+        colorList = list;
+        Toast.makeText(activity, "Its ready.", Toast.LENGTH_SHORT).show();
+        return 0;
+    }
+
+    /**
+     * Convert RGB value to HSL array
+     *
+     * @param hex
+     * @return
+     */
+    private int[] convertRgbToHsl(String hex) {
+        double[] rgb = new double[]{
+                (float) Integer.decode("0x" + hex.substring(1, 3)) / 255,
+                (float) Integer.decode("0x" + hex.substring(3, 5)) / 255,
+                (float) Integer.decode("0x" + hex.substring(5, 7)) / 255
+        };
+
+        double r = rgb[0];
+        double g = rgb[1];
+        double b = rgb[2];
+
+        double min, max, delta, h, s, l;
+
+        min = Math.min(r, Math.min(g, b));
+        max = Math.max(r, Math.max(g, b));
+        delta = max - min;
+        l = (min + max) / 2;
+
+        s = 0;
+        if (l > 0 && l < 1)
+            s = delta / (l < 0.5 ? (2 * l) : (2 - 2 * l));
+
+        h = 0;
+        if (delta > 0) {
+            if (max == r && max != g) h += (g - b) / delta;
+            if (max == g && max != b) h += (2 + (b - r) / delta);
+            if (max == b && max != r) h += (4 + (r - g) / delta);
+            h /= 6;
+        }
+
+        double factor = 255.0;
+
+        return new int[]{
+                (int) (h * factor),
+                (int) (s * factor),
+                (int) (l * factor)
+        };
     }
 
     /**
@@ -98,156 +164,39 @@ public class ColorDetectHandler {
         double df = -1;
         int cl = -1;
 
+        int size = colorList.size();
         for (int i = 0; i < colorList.size(); i++) {
-            try {
-                // Get the object
-                JSONObject colorObject = colorList.get(i);
+            // Get the object
+            ColorDefinition colorObject = colorList.get(i);
 
-                // If hex matches with any color in the list
-                // then set name and hue, and return nothing
-                if (colorObject.getString("hex").equals(hex)) {
-                    name = colorObject.getString("name");
-                    hue = colorObject.getString("hue");
-                    return;
-                }
+            // If hex matches with any color in the list
+            // then set name and hue, and return nothing
+            if (colorObject.hex.equals(hex)) {
+                this.name = colorObject.name;
+                this.hue = colorObject.hue;
+                return;
+            }
 
-                int c_r = Integer.parseInt(colorObject.getString("r"));
-                int c_g = Integer.parseInt(colorObject.getString("g"));
-                int c_b = Integer.parseInt(colorObject.getString("b"));
+            int c_r = Integer.parseInt(colorObject.r);
+            int c_g = Integer.parseInt(colorObject.g);
+            int c_b = Integer.parseInt(colorObject.b);
 
-                int c_h = Integer.parseInt(colorObject.getString("h"));
-                int c_s = Integer.parseInt(colorObject.getString("s"));
-                int c_l = Integer.parseInt(colorObject.getString("l"));
+            int c_h = Integer.parseInt(colorObject.h);
+            int c_s = Integer.parseInt(colorObject.s);
+            int c_l = Integer.parseInt(colorObject.l);
 
-                ndf1 = (int) Math.pow(r - c_r, 2) + (int) Math.pow(g - c_g, 2) + (int) Math.pow(b - c_b, 2);
-                ndf2 = Math.abs((int) Math.pow(h - c_h, 2)) + (int) Math.pow(s - c_s, 2) + Math.abs((int) Math.pow(l - c_l, 2));
-                ndf = ndf1 + ndf2 * 2;
-                if (df < 0 || df > ndf) {
-                    df = ndf;
-                    cl = i;
-                }
-
-            } catch (JSONException exception) {
-                Toast.makeText(activity, "An error has occurred while getting color name", Toast.LENGTH_SHORT).show();
+            ndf1 = (int) Math.pow(r - c_r, 2) + (int) Math.pow(g - c_g, 2) + (int) Math.pow(b - c_b, 2);
+            ndf2 = Math.abs((int) Math.pow(h - c_h, 2)) + (int) Math.pow(s - c_s, 2) + Math.abs((int) Math.pow(l - c_l, 2));
+            ndf = ndf1 + ndf2 * 2;
+            if (df < 0 || df > ndf) {
+                df = ndf;
+                cl = i;
             }
         }
 
-        try {
-            JSONObject colorObject = colorList.get(cl);
-            this.hex = colorObject.getString("hex");
-            name = colorObject.getString("name");
-            hue = colorObject.getString("hue");
-        } catch (JSONException exception) {
-            Toast.makeText(activity, "An error has occurred while getting color name", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Resets all variables in this class
-     */
-    private void reset() {
-        this.red = 0;
-        this.green = 0;
-        this.blue = 0;
-        this.rgb = 0;
-        this.hex = "";
-        this.name = "";
-        this.hue = "";
-    }
-
-    /**
-     * Reads color names, and hex information from file
-     */
-    private void readColorInformationList() {
-
-        Scanner sc = null;
-        InputStream inputStream = null;
-
-        String json = "";
-
-        try {
-            // Get the json file
-            inputStream = activity.getAssets().open("colors.json");
-            sc = new Scanner(inputStream, "UTF-8");
-
-            // Read
-            while (sc.hasNextLine()) {
-                json += sc.nextLine();
-            }
-
-            // note that Scanner suppresses exceptions
-            if (sc.ioException() != null) {
-                Toast.makeText(activity, "An error has occurred while reading color list", Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(activity, "An error has occurred while reading color list", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    Toast.makeText(activity, "An error has occurred while reading color list", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if (sc != null) {
-                sc.close();
-            }
-        }
-
-        // Convert json string to array
-        try {
-            JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                colorList.add(jsonArray.getJSONObject(i));
-            }
-        } catch (JSONException e) {
-            Toast.makeText(activity, "Color list file is corrupted", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Convert RGB value to HSL array
-     *
-     * @param hex
-     * @return
-     */
-    private int[] convertRgbToHsl(String hex) {
-        double[] rgb = new double[]{
-                (float) Integer.decode("0x" + hex.substring(1, 3)) / 255,
-                (float) Integer.decode("0x" + hex.substring(3, 5)) / 255,
-                (float) Integer.decode("0x" + hex.substring(5, 7)) / 255
-        };
-
-        double r = rgb[0];
-        double g = rgb[1];
-        double b = rgb[2];
-
-        double min, max, delta, h, s, l;
-
-        min = Math.min(r, Math.min(g, b));
-        max = Math.max(r, Math.max(g, b));
-        delta = max - min;
-        l = (min + max) / 2;
-
-        s = 0;
-        if (l > 0 && l < 1)
-            s = delta / (l < 0.5 ? (2 * l) : (2 - 2 * l));
-
-        h = 0;
-        if (delta > 0) {
-            if (max == r && max != g) h += (g - b) / delta;
-            if (max == g && max != b) h += (2 + (b - r) / delta);
-            if (max == b && max != r) h += (4 + (r - g) / delta);
-            h /= 6;
-        }
-
-        double factor = 255.0;
-
-        return new int[]{
-                (int) (h * factor),
-                (int) (s * factor),
-                (int) (l * factor)
-        };
+        ColorDefinition colorObject = colorList.get(cl);
+        this.hex = colorObject.hex;
+        this.name = colorObject.name;
+        this.hue = colorObject.hue;
     }
 }
