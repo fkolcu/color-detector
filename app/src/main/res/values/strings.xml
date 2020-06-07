@@ -34,4 +34,6 @@
     <string name="about_login">You can login with your existing email address or username and password. \n\n When you entered a username or email adress which is not existing you will be registered and logged in automatically</string>
     <string name="color_deleted">Color deleted!</string>
     <string name="about_open_source">This application is an open-source project. You can contribute on a github</string>
+    <string name="email_required">Please, enter an email or username</string>
+    <string name="password_required">Please, enter a password</string>
 </resources>
