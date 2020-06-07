@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.furkank.colordetector.firebase.IntentHandler;
+
 public class SessionHandler {
     private static final int PRIVATE_MODE = 0;
     private static final String IS_LOGIN = "IsLoggedIn";
@@ -91,12 +93,6 @@ public class SessionHandler {
                 return;
         }
 
-        Intent intent = new Intent(context, targetClass);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        context.startActivity(intent);
+        IntentHandler.open(context, targetClass);
     }
 }

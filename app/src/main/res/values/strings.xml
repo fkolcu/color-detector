@@ -25,4 +25,6 @@
     <string name="login_failed">"Login failed"</string>
     <string name="not_logged_in_yet">Not logged in yet</string>
     <string name="need_login_for_mycolors">You need to login to see your colors</string>
+    <string name="title_activity_my_colors">MyColors</string>
+    <string name="no_colors_saved">You haven\'t saved any color yet</string>
 </resources>

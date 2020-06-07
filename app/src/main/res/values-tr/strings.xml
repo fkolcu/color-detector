@@ -26,4 +26,6 @@
     <string name="login_failed">Giriş başarısız</string>
     <string name="not_logged_in_yet">Henüz giriş yapmadınız</string>
     <string name="need_login_for_mycolors">Renklerinizi görebilmek için giriş yapmalısınız</string>
+    <string name="title_activity_my_colors">MyColors</string>
+    <string name="no_colors_saved">Henüz bir renk kaydetmediniz</string>
 </resources>

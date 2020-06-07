@@ -68,21 +68,23 @@ public class ColorDetectHandler {
     private Integer readCallback(ArrayList<ColorDefinition> list) {
         colorList = list;
         Toast.makeText(activity, "Its ready.", Toast.LENGTH_SHORT).show();
-        ((MainActivity)activity).readyToCatch = true;
+        ((MainActivity) activity).readyToCatch = true;
         return 0;
     }
 
     /**
      * Convert RGB value to HSL array
      *
-     * @param hex
+     * @param red
+     * @param green
+     * @param blue
      * @return
      */
-    private int[] convertRgbToHsl(String hex) {
+    private int[] convertRgbToHsl(int red, int green, int blue) {
         double[] rgb = new double[]{
-                (float) Integer.decode("0x" + hex.substring(1, 3)) / 255,
-                (float) Integer.decode("0x" + hex.substring(3, 5)) / 255,
-                (float) Integer.decode("0x" + hex.substring(5, 7)) / 255
+                (float) red / 255,
+                (float) green / 255,
+                (float) blue / 255
         };
 
         double r = rgb[0];
@@ -163,7 +165,7 @@ public class ColorDetectHandler {
      */
     private void setColorName(int r, int g, int b, String hex) {
         // Get HSL of color
-        int[] hsl = convertRgbToHsl(hex);
+        int[] hsl = convertRgbToHsl(r, g, b);
         int h = hsl[0];
         int s = hsl[1];
         int l = hsl[2];

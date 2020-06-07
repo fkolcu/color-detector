@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.opengl.GLES20;
 import android.graphics.SurfaceTexture;
 
+import com.furkank.colordetector.firebase.IntentHandler;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.view.Gravity;
@@ -226,7 +227,7 @@ public class MainActivity extends AppCompatActivity
             sessionHandler.checkLogin();
         } else if (id == R.id.nav_mycolors) {
             if (sessionHandler.isLoggedIn()) {
-                // Do things
+                IntentHandler.open(this, MyColorsActivity.class, false);
             } else {
                 Toast.makeText(this, R.string.need_login_for_mycolors, Toast.LENGTH_LONG).show();
             }
