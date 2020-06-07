@@ -1,4 +1,4 @@
-package com.furkank.colordetector.firebase;
+package com.furkank.colordetector;
 
 import android.content.Context;
 import android.content.Intent;
