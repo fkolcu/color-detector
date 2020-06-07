@@ -3,6 +3,8 @@ package com.furkank.colordetector;
 import com.furkank.colordetector.firebase.FirebaseWriteHandler;
 
 public class UserColor {
+    public String key;
+
     // User email address to store colors with
     public String email;
 
@@ -57,5 +59,13 @@ public class UserColor {
 
         FirebaseWriteHandler fbWrite = new FirebaseWriteHandler();
         return fbWrite.add("colors", userColor);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

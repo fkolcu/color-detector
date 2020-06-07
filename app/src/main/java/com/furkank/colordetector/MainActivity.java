@@ -235,6 +235,8 @@ public class MainActivity extends AppCompatActivity
             sessionHandler.remove();
         } else if (id == R.id.nav_github) {
             goToGithub();
+        } else if (id == R.id.nav_about) {
+            IntentHandler.open(this, AboutActivity.class, false);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

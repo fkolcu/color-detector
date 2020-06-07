@@ -12,6 +12,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class FirebaseReadHandler<T> {
@@ -28,6 +30,7 @@ public class FirebaseReadHandler<T> {
 
     /**
      * Reads data and calls callback function with data
+     *
      * @param collection
      * @param callback
      */
@@ -41,7 +44,22 @@ public class FirebaseReadHandler<T> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    objectList.add(ds.getValue(typeClass));
+                    // Get object with set value
+                    T object = ds.getValue(typeClass);
+
+                    // Try to add key into the object
+                    try {
+                        object.getClass().getMethod("setKey", String.class).invoke(object, ds.getKey());
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Add object to the list
+                    objectList.add(object);
                 }
 
                 callback.apply(objectList);
