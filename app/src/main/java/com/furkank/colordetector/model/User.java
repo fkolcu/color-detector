@@ -1,4 +1,6 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.model;
+
+import com.furkank.colordetector.handler.EncryptionHandler;
 
 public class User {
     public String email;

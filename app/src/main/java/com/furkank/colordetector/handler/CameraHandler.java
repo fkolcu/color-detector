@@ -1,4 +1,4 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.handler;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -45,7 +45,7 @@ public class CameraHandler {
     }
 
     @SuppressLint("MissingPermission")
-    protected void openCamera() {
+    public void openCamera() {
         CameraManager cameraManager = (CameraManager) cameraService;
 
         try {

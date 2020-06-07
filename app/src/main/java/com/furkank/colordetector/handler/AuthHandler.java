@@ -1,11 +1,10 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.handler;
 
 import android.app.Activity;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.arch.core.util.Function;
-
+import com.furkank.colordetector.model.User;
 import com.furkank.colordetector.firebase.FirebaseReadHandler;
 import com.furkank.colordetector.firebase.FirebaseWriteHandler;
 

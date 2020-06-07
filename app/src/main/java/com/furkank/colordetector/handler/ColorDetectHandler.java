@@ -1,4 +1,4 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.handler;
 
 import android.view.View;
 import android.widget.Toast;
@@ -7,8 +7,9 @@ import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.view.TextureView;
 
+import com.furkank.colordetector.model.ColorDefinition;
+import com.furkank.colordetector.MainActivity;
 import com.furkank.colordetector.firebase.FirebaseReadHandler;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -16,15 +17,15 @@ public class ColorDetectHandler {
 
     Activity activity = null;
 
-    protected int red;
-    protected int green;
-    protected int blue;
+    public int red;
+    public int green;
+    public int blue;
 
-    protected int rgb;
-    protected String hex;
+    public int rgb;
+    public String hex;
 
-    protected String name;
-    protected String hue;
+    public String name;
+    public String hue;
 
     private Bitmap bitmap;
 
@@ -125,7 +126,7 @@ public class ColorDetectHandler {
      * @param cameraView
      * @param pointer
      */
-    protected void detect(TextureView cameraView, View pointer) {
+    public void detect(TextureView cameraView, View pointer) {
         // Reset all variables before to detect new color
         reset();
 

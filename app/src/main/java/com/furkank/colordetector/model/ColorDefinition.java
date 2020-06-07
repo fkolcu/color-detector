@@ -1,4 +1,4 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.model;
 
 public class ColorDefinition {
 

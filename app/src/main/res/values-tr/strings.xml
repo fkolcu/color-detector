@@ -35,4 +35,6 @@
     <string name="about_login">Mevcut kullanıcı adı veye email adresinizi ve şifrenizi kullanarak giriş yapabilirsiniz\n\nMevcut olmayan bir kullanıcı adı veya email adresi girdiğinizde otomatik olarak kayıt olacak ve giriş yapmış olacaksınız</string>
     <string name="color_deleted">Renk silindi!</string>
     <string name="about_open_source">Bu uygulama açık kaynak bir projedir. Github üzerinden katkıda bulunabilirsiniz</string>
+    <string name="email_required">Lütfen bir e-posta veya kullanıcı adı giriniz</string>
+    <string name="password_required">Lütfen bir şifre giriniz</string>
 </resources>
