@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Renk Algılayıcı</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_login">Giriş yap</string>
+    <string name="menu_mycolors">Renklerim</string>
+    <string name="menu_logout">Çıkış yap</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="project_github">Katkıda bulun</string>
+    <string name="save">Kaydet</string>
+    <string name="saved_successfully">Kaydedildi!</string>
+    <string name="not_saved">Kaydedilemedi :(</string>
+
+    <string name="title_activity_login">Giriş yap</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Şifre</string>
+    <string name="action_sign_in">Giriş yap veya kaydol</string>
+    <string name="action_sign_in_short">Giriş yap</string>
+    <string name="welcome">Hoş geldin</string>
+    <string name="login_failed">Giriş başarısız</string>
+    <string name="not_logged_in_yet">Henüz giriş yapmadınız</string>
+    <string name="need_login_for_mycolors">Renklerinizi görebilmek için giriş yapmalısınız</string>
+    <string name="title_activity_my_colors">MyColors</string>
+    <string name="no_colors_saved">Henüz bir renk kaydetmediniz</string>
+    <string name="copied">Kopyalandı!</string>
+    <string name="project_about">Hakkında</string>
+    <string name="about_catch_button">Kırmızı işaretçinin işaret ettiği noktanın rengini yakalar</string>
+    <string name="about_mycolors_menu">Kaydettiğiniz renkleri listeler\n\nRengin üzerinde sağa kaydırarak rengin hex kodunu kopyalayabilirsiniz\n\nRengin üzerinde sağa kaydırarak rengi silebilirsiniz</string>
+    <string name="about_login">Mevcut kullanıcı adı veye email adresinizi ve şifrenizi kullanarak giriş yapabilirsiniz\n\nMevcut olmayan bir kullanıcı adı veya email adresi girdiğinizde otomatik olarak kayıt olacak ve giriş yapmış olacaksınız</string>
+    <string name="color_deleted">Renk silindi!</string>
+    <string name="about_open_source">Bu uygulama açık kaynak bir projedir. Github üzerinden katkıda bulunabilirsiniz</string>
+</resources>
