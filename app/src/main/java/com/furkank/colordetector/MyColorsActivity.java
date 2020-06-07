@@ -1,7 +1,12 @@
 package com.furkank.colordetector;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.furkank.colordetector.firebase.FirebaseReadHandler;
+import com.furkank.colordetector.listener.OnSwipeTouchListener;
 
 import java.util.ArrayList;
 
@@ -88,6 +94,21 @@ public class MyColorsActivity extends AppCompatActivity {
         ImageView colorView = new ImageView(this);
         colorView.setMinimumHeight(150);
         colorView.setBackgroundColor(Color.parseColor(userColor.getColor()));
+        colorView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                copyTheColor((ImageView) v);
+                return super.onTouch(v, event);
+            }
+
+            public void onSwipeRight() {
+                Toast.makeText(MyColorsActivity.this, "right", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onSwipeLeft() {
+                Toast.makeText(MyColorsActivity.this, "left", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Create text for color name
         TextView colorText = new TextView(this);
@@ -98,5 +119,21 @@ public class MyColorsActivity extends AppCompatActivity {
         // Add item view to container view
         myColorsContainer.addView(colorView);
         myColorsContainer.addView(colorText);
+    }
+
+    /**
+     * Copies the hex color of touched color
+     *
+     * @param v
+     */
+    private void copyTheColor(ImageView v) {
+        ColorDrawable d = (ColorDrawable) v.getBackground();
+        String hexColor = String.format("#%06X", (0xFFFFFF & d.getColor()));
+
+        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("color", hexColor);
+        clipboardManager.setPrimaryClip(clipData);
+
+        Toast.makeText(MyColorsActivity.this, R.string.copied, Toast.LENGTH_SHORT).show();
     }
 }
