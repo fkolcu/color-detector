@@ -1,8 +1,11 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
+
+import com.furkank.colordetector.LoginActivity;
+import com.furkank.colordetector.MainActivity;
 
 public class SessionHandler {
     private static final int PRIVATE_MODE = 0;

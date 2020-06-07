@@ -1,4 +1,4 @@
-package com.furkank.colordetector;
+package com.furkank.colordetector.handler;
 
 import android.content.Context;
 import android.content.Intent;

@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,7 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.furkank.colordetector.firebase.FirebaseReadHandler;
 import com.furkank.colordetector.firebase.FirebaseWriteHandler;
+import com.furkank.colordetector.handler.SessionHandler;
 import com.furkank.colordetector.listener.OnSwipeTouchListener;
+import com.furkank.colordetector.model.User;
+import com.furkank.colordetector.model.UserColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;

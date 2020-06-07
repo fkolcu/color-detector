@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.furkank.colordetector.handler.AuthHandler;
+
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton = null;

@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.opengl.GLES20;
 import android.graphics.SurfaceTexture;
 
+import com.furkank.colordetector.handler.CameraHandler;
+import com.furkank.colordetector.handler.ColorDetectHandler;
+import com.furkank.colordetector.handler.IntentHandler;
+import com.furkank.colordetector.handler.SessionHandler;
+import com.furkank.colordetector.model.UserColor;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.view.TextureView;
@@ -135,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             if (readyToCatchToast != null) {
                 readyToCatchToast.cancel();
             }
-            readyToCatchToast = Toast.makeText(this, "Please, wait for list loading", Toast.LENGTH_SHORT);
+            readyToCatchToast = Toast.makeText(this, "Please, wait for the list to load", Toast.LENGTH_SHORT);
             readyToCatchToast.show();
             return;
         }
