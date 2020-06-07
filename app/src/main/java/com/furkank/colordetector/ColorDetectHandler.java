@@ -130,8 +130,10 @@ public class ColorDetectHandler {
         reset();
 
         // Get the coordinate of pointer
-        float x = pointer.getX();
-        float y = pointer.getY();
+        // Add half of width and half of height to x and y
+        // to be able to target the center of the pointer
+        float x = pointer.getX() + (float)(pointer.getWidth() / 2);
+        float y = pointer.getY() + (float)(pointer.getHeight() / 2);
 
         // Create a bitmap using camera view
         // # Note: It is important that bitmap size should
