@@ -7,13 +7,23 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_login">Giriş yap</string>
+    <string name="menu_mycolors">Renklerim</string>
+    <string name="menu_logout">Çıkış yap</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="project_github">Katkıda bulun</string>
     <string name="save">Kaydet</string>
     <string name="saved_successfully">Kaydedildi!</string>
     <string name="not_saved">Kaydedilemedi :(</string>
+
+    <string name="title_activity_login">Giriş yap</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Şifre</string>
+    <string name="action_sign_in">Giriş yap veya kaydol</string>
+    <string name="action_sign_in_short">Giriş yap</string>
+    <string name="welcome">Hoş geldin</string>
+    <string name="login_failed">Giriş başarısız</string>
+    <string name="not_logged_in_yet">Henüz giriş yapmadınız</string>
+    <string name="need_login_for_mycolors">Renklerinizi görebilmek için giriş yapmalısınız</string>
 </resources>

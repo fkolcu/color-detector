@@ -1,25 +1,21 @@
 package com.furkank.colordetector;
 
-import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.opengl.GLES20;
 import android.graphics.SurfaceTexture;
 
-import com.furkank.colordetector.firebase.FirebaseWriteHandler;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.Gravity;
 import android.view.TextureView;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import android.view.MenuItem;
 
@@ -28,24 +24,30 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private View pointer = null;
+    private DrawerLayout drawer = null;
+    private TextView loggedInEmail = null;
     private TextureView cameraView = null;
+
+    private SessionHandler sessionHandler = null;
 
     private CameraHandler cameraHandler = null;
     private ColorDetectHandler colorDetectHandler = null;
+
+    public boolean readyToCatch = false;
+    private Toast readyToCatchToast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,9 @@ public class MainActivity extends AppCompatActivity
         cameraView = findViewById(R.id.cameraView);
         cameraView.setSurfaceTextureListener(cameraViewListener);
 
+        // Define session handler
+        sessionHandler = new SessionHandler(this);
+
         // Get camera service
         // Create camera handler
         Object cameraService = getSystemService(Context.CAMERA_SERVICE);
@@ -72,16 +77,15 @@ public class MainActivity extends AppCompatActivity
         // Color detect handler
         colorDetectHandler = new ColorDetectHandler(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        // Define drawer
+        drawer = findViewById(R.id.drawer_layout);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        // Define navigation
         NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Handle tools under menu view
+        handleNavigationTools(navigationView);
     }
 
     // Listen texture view and if it is available
@@ -127,6 +131,16 @@ public class MainActivity extends AppCompatActivity
      * @param view
      */
     public void onColorCaught(View view) {
+        // If list is not ready yet, then keep user waiting
+        if (!readyToCatch) {
+            if (readyToCatchToast != null) {
+                readyToCatchToast.cancel();
+            }
+            readyToCatchToast = Toast.makeText(this, "Please, wait for list loading", Toast.LENGTH_SHORT);
+            readyToCatchToast.show();
+            return;
+        }
+
         // We need to create an instance of color detect handler
         // each time because we need to each variable within as empty at first
         colorDetectHandler.detect(cameraView, pointer);
@@ -140,20 +154,31 @@ public class MainActivity extends AppCompatActivity
                 .setAction(R.string.save, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UserColor userColor = new UserColor();
-                        userColor.setColor(colorDetectHandler.hex);
-                        userColor.setName(colorDetectHandler.name);
+                        boolean loginResult = sessionHandler.checkLogin();
+                        if (!loginResult) {
+                            return;
+                        }
 
-                        FirebaseWriteHandler fbWrite = new FirebaseWriteHandler();
-                        boolean result = fbWrite.add("colors", userColor);
-                        if(result){
+                        UserColor userColor = new UserColor();
+                        boolean result = userColor.save(
+                                sessionHandler.getUserEmail(),
+                                colorDetectHandler.hex,
+                                colorDetectHandler.name
+                        );
+
+                        if (result) {
                             Toast.makeText(MainActivity.this, R.string.saved_successfully, Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             Toast.makeText(MainActivity.this, R.string.not_saved, Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
                 .show();
+    }
+
+    public void onDrawerToggleClicked(View v) {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.openDrawer(GravityCompat.START, true);
     }
 
     // The following methods is automatically generated
@@ -168,26 +193,27 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void handleNavigationTools(NavigationView navigationView) {
+        // Nav header
+        loggedInEmail = navigationView.getHeaderView(0).findViewById(R.id.loggedInEmail);
+        if (sessionHandler.isLoggedIn()) {
+            loggedInEmail.setText(sessionHandler.getUserEmail());
         }
 
-        return super.onOptionsItemSelected(item);
+        // Nav buttons
+        Menu menu = navigationView.getMenu();
+
+        // Login menu item
+        MenuItem loginNav = menu.findItem(R.id.nav_login);
+        if (sessionHandler.isLoggedIn()) {
+            loginNav.setVisible(false);
+        }
+
+        // Logout menu item
+        MenuItem logoutNav = menu.findItem(R.id.nav_logout);
+        if (!sessionHandler.isLoggedIn()) {
+            logoutNav.setVisible(false);
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -196,22 +222,27 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_login) {
+            sessionHandler.checkLogin();
+        } else if (id == R.id.nav_mycolors) {
+            if (sessionHandler.isLoggedIn()) {
+                // Do things
+            } else {
+                Toast.makeText(this, R.string.need_login_for_mycolors, Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.nav_logout) {
+            sessionHandler.remove();
+        } else if (id == R.id.nav_github) {
+            goToGithub();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void goToGithub() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/fkolcu/color-detector"));
+        startActivity(browserIntent);
     }
 }

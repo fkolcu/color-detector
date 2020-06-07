@@ -11,16 +11,28 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <!--<androidx.appcompat.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="#f00000"-->
+            <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/drawerToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="30dp"
+        android:src="@drawable/ic_menu"
+        android:clickable="false"
+        android:backgroundTint="#FFFFFF"
+        app:borderWidth="0dp"
+        android:onClick="onDrawerToggleClicked"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonCatchColor"
@@ -29,6 +41,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="30dp"
         android:src="@drawable/ic_target"
+        android:clickable="false"
         android:backgroundTint="#FFFFFF"
         app:borderWidth="0dp"
         android:onClick="onColorCaught"/>

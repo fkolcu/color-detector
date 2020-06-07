@@ -7,13 +7,22 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_mycolors">My colors</string>
+    <string name="menu_logout">Log out</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="project_github">Contribute</string>
     <string name="save">Save</string>
     <string name="saved_successfully">Saved!</string>
     <string name="not_saved">Couldn\'t saved :(</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="not_logged_in_yet">Not logged in yet</string>
+    <string name="need_login_for_mycolors">You need to login to see your colors</string>
 </resources>

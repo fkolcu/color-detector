@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.view.TextureView;
 
 import com.furkank.colordetector.firebase.FirebaseReadHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -60,12 +61,14 @@ public class ColorDetectHandler {
 
     /**
      * This is called after firebase read completed
+     *
      * @param list
      * @return
      */
     private Integer readCallback(ArrayList<ColorDefinition> list) {
         colorList = list;
         Toast.makeText(activity, "Its ready.", Toast.LENGTH_SHORT).show();
+        ((MainActivity)activity).readyToCatch = true;
         return 0;
     }
 
